@@ -72,6 +72,17 @@ def map_create(films, year, markers):
     (dict, int, int) -> None
     Create map with tree layers: films, dencity of country and urban areas
     """
+    reverse_films = dict()
+    for film in films:
+        reverse_films[films[film]] = ""
+    for film in films:
+        reverse_films[films[film]] += \
+            "<li>{}</li>".format(film.replace("'", '"').replace("#", ""))
+    for film in reverse_films:
+        reverse_films[film] = '<div style="max-height: 100px; overflow-y: ' \
+                              'scroll;"><ul>' + reverse_films[
+                                  film] + '</ul></div>'
+    films = reverse_films
     # create map
     map = folium.Map()
     # add films to map
@@ -80,10 +91,11 @@ def map_create(films, year, markers):
         try:
             if markers == 0:
                 break
-            fg_films.add_child(folium.Marker(location=films[film]))
-            markers-=1
+            fg_films.add_child(folium.Marker(location=film, popup=films[
+                film]))
+            markers -= 1
         except:
-            c=0
+            c = 0
     map.add_child(fg_films)
     # add dencity to map
     fg_dencity = folium.FeatureGroup(name="Dencity")
